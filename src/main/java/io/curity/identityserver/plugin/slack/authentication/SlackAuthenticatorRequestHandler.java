@@ -34,6 +34,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.curity.identityserver.plugin.authentication.Constants.Params.PARAM_REDIRECT_URI;
+import static io.curity.identityserver.plugin.slack.authentication.Constants.TEAM;
+import static io.curity.identityserver.plugin.slack.authentication.Constants.USERS_READ;
 
 public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHandler<RequestModel> {
     private static final Logger _logger = LoggerFactory.getLogger(SlackAuthenticatorRequestHandler.class);
@@ -54,7 +56,7 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
         _logger.info("GET request received for authentication authentication");
 
         _oauthClient.setServiceProviderId(requestModel.getRequest());
-        return requestAuthentication(response, ImmutableMap.of(PARAM_REDIRECT_URI, _oauthClient.getCallbackUrl()));
+        return requestAuthentication(response, ImmutableMap.of(PARAM_REDIRECT_URI, _oauthClient.getCallbackUrl(), TEAM, _config.getTeam()));
     }
 
     @Override
@@ -71,11 +73,13 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
         ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder()
                 .putAll(extraAuthorizeParameters);
 
+        String scope = _config.getScope().toLowerCase();
+        scope = scope.contains(USERS_READ) ? scope : scope + " " + USERS_READ;
 
         _oauthClient.redirectToAuthorizationEndpoint(response,
                 _config.getAuthorizationEndpoint().toString(),
                 _config.getClientId(),
-                _config.getScope(), builder.build());
+                scope, builder.build());
 
         return Optional.empty();
     }

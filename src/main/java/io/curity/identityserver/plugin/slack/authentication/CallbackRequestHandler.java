@@ -19,6 +19,11 @@ package io.curity.identityserver.plugin.slack.authentication;
 import io.curity.identityserver.plugin.authentication.CodeFlowOAuthClient;
 import io.curity.identityserver.plugin.authentication.OAuthClient;
 import io.curity.identityserver.plugin.slack.config.SlackAuthenticatorPluginConfig;
+import se.curity.identityserver.sdk.attribute.Attribute;
+import se.curity.identityserver.sdk.attribute.Attributes;
+import se.curity.identityserver.sdk.attribute.AuthenticationAttributes;
+import se.curity.identityserver.sdk.attribute.ContextAttributes;
+import se.curity.identityserver.sdk.attribute.SubjectAttributes;
 import se.curity.identityserver.sdk.authentication.AuthenticationResult;
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler;
 import se.curity.identityserver.sdk.service.ExceptionFactory;
@@ -31,6 +36,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static io.curity.identityserver.plugin.authentication.Constants.Params.PARAM_ACCESS_TOKEN;
+import static io.curity.identityserver.plugin.slack.authentication.Constants.USER_ID;
 
 public class CallbackRequestHandler
         implements AuthenticatorRequestHandler<CallbackGetRequestModel> {
@@ -66,7 +72,11 @@ public class CallbackRequestHandler
                 _config.getClientSecret(),
                 requestModel.getCode(),
                 requestModel.getState());
-        return _oauthClient.getAuthenticationResult(tokenMap.get(PARAM_ACCESS_TOKEN).toString(), _config.getUserInfoEndpoint().toString());
+
+        AuthenticationAttributes attributes = AuthenticationAttributes.of(
+                SubjectAttributes.of(tokenMap.get(USER_ID).toString(), Attributes.fromMap(tokenMap)),
+                ContextAttributes.of(Attributes.of(Attribute.of(PARAM_ACCESS_TOKEN, tokenMap.get(PARAM_ACCESS_TOKEN).toString()))));
+        return Optional.of(new AuthenticationResult(attributes));
     }
 
     @Override

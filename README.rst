@@ -26,17 +26,13 @@ Config
 | ``Token``         | https://slack.com/api/oauth.access               | URL to the Slack            |
 | ``Endpoint``      |                                                  | authorization endpoint      |
 +-------------------+--------------------------------------------------+-----------------------------+
-| ``Scope``         |                                                  | A space-separated list of   |
+| ``Scope``         |  ``users:read``                                  | A space-separated list of   |
 |                   |                                                  | scopes to request from      |
 |                   |                                                  | Slack                       |
 +-------------------+--------------------------------------------------+-----------------------------+
 | ``Team``          |                                                  | Slack team ID of a          |
 |                   |                                                  | workspace to attempt to     |
 |                   |                                                  | restrict to                 |
-+-------------------+--------------------------------------------------+-----------------------------+
-| ``User Info``     | https://slack.com/api/users.info                 | URL to the Slack            |
-| ``Endpoint``      |                                                  | userinfo(profile) endpoint  |
-|                   |                                                  |                             |
 +-------------------+--------------------------------------------------+-----------------------------+
 
 Build plugin

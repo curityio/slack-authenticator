@@ -24,6 +24,8 @@ import se.curity.identityserver.sdk.service.SessionManager;
 
 import java.net.URI;
 
+import static io.curity.identityserver.plugin.slack.authentication.Constants.USERS_READ;
+
 @SuppressWarnings("InterfaceNeverImplemented")
 public interface SlackAuthenticatorPluginConfig extends Configuration {
     @Description("client id")
@@ -41,16 +43,12 @@ public interface SlackAuthenticatorPluginConfig extends Configuration {
     URI getTokenEndpoint();
 
     @Description("A space-separated list of scopes to request from Slack")
-    @DefaultString("")
+    @DefaultString(USERS_READ)
     String getScope();
 
     @Description("Slack team ID of a workspace to attempt to restrict to")
     @DefaultString("")
     String getTeam();
-
-    @Description("URL to the Slack userinfo(profile) endpoint")
-    @DefaultURI("https://slack.com/api/users.info")
-    URI getUserInfoEndpoint();
 
     SessionManager getSessionManager();
 

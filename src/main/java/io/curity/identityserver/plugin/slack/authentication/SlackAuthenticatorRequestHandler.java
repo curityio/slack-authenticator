@@ -17,7 +17,7 @@
 package io.curity.identityserver.plugin.slack.authentication;
 
 import com.google.common.collect.ImmutableMap;
-import io.curity.identityserver.plugin.authentication.CodeFlowOAuthClient;
+import io.curity.identityserver.plugin.authentication.DefaultOAuthClient;
 import io.curity.identityserver.plugin.authentication.OAuthClient;
 import io.curity.identityserver.plugin.slack.config.SlackAuthenticatorPluginConfig;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
                                             Json json,
                                             AuthenticatorInformationProvider provider) {
         _config = config;
-        _oauthClient = new CodeFlowOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
+        _oauthClient = new DefaultOAuthClient(exceptionFactory, provider, json, config.getSessionManager());
     }
 
     @Override

@@ -17,39 +17,42 @@
 package io.curity.identityserver.plugin.slack.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
-import se.curity.identityserver.sdk.config.annotation.DefaultString;
-import se.curity.identityserver.sdk.config.annotation.DefaultURI;
 import se.curity.identityserver.sdk.config.annotation.Description;
+import se.curity.identityserver.sdk.service.ExceptionFactory;
+import se.curity.identityserver.sdk.service.HttpClient;
+import se.curity.identityserver.sdk.service.Json;
 import se.curity.identityserver.sdk.service.SessionManager;
+import se.curity.identityserver.sdk.service.WebServiceClientFactory;
+import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformationProvider;
 
-import java.net.URI;
-
-import static io.curity.identityserver.plugin.slack.authentication.Constants.USERS_READ;
+import java.util.Optional;
 
 @SuppressWarnings("InterfaceNeverImplemented")
-public interface SlackAuthenticatorPluginConfig extends Configuration {
-    @Description("client id")
+public interface SlackAuthenticatorPluginConfig extends Configuration
+{
+    @Description("The client applications identifier")
     String getClientId();
 
-    @Description("Secret key used for communication with slack")
+    @Description("The secret of the client application")
     String getClientSecret();
 
-    @Description("URL to the Slack authorization endpoint")
-    @DefaultURI("https://slack.com/oauth/authorize")
-    URI getAuthorizationEndpoint();
-
-    @Description("URL to the Slack access token endpoint")
-    @DefaultURI("https://slack.com/api/oauth.access")
-    URI getTokenEndpoint();
-
-    @Description("A space-separated list of scopes to request from Slack")
-    @DefaultString(USERS_READ)
-    String getScope();
+    @Description("The HTTP client with any proxy and TLS settings that will be used to connect to slack")
+    Optional<HttpClient> getHttpClient();
 
     @Description("Slack team ID of a workspace to attempt to restrict to")
-    @DefaultString("")
-    String getTeam();
+    Optional<String> getTeam();
+
+
+    // Services that don't require any configuration
 
     SessionManager getSessionManager();
+
+    ExceptionFactory getExceptionFactory();
+
+    AuthenticatorInformationProvider getAuthenticatorInformationProvider();
+
+    WebServiceClientFactory getWebServiceClientFactory();
+
+    Json getJson();
 
 }

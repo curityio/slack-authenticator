@@ -17,6 +17,9 @@
 package io.curity.identityserver.plugin.slack.config;
 
 import se.curity.identityserver.sdk.config.Configuration;
+import se.curity.identityserver.sdk.config.OneOf;
+import se.curity.identityserver.sdk.config.annotation.DefaultBoolean;
+import se.curity.identityserver.sdk.config.annotation.DefaultEnum;
 import se.curity.identityserver.sdk.config.annotation.Description;
 import se.curity.identityserver.sdk.service.ExceptionFactory;
 import se.curity.identityserver.sdk.service.HttpClient;
@@ -43,7 +46,36 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
     Optional<String> getTeam();
 
 
-    // Services that don't require any configuration
+    Scopes getScope();
+
+    interface Scopes extends OneOf
+    {
+        Optional<@DefaultBoolean(true) Boolean> isAdministerWorkspace();
+
+        Optional<OtherScopes> isOtherScopes();
+
+        interface OtherScopes
+        {
+            @Description("Manage information about your public channels")
+            Optional<ManageChannel> getManageChannel();
+
+        }
+
+        interface ManageChannel
+        {
+            @Description("Access content in your public channels")
+            @DefaultBoolean(false)
+            boolean getChannelHistory();
+
+            @DefaultEnum("NONE")
+            Access getChannelAccess();
+        }
+
+        enum Access
+        {
+            NONE, READ, WRITE
+        }
+    }
 
     SessionManager getSessionManager();
 

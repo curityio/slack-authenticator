@@ -110,203 +110,211 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
         //add default scope to get user profile info
         scopes.add("users:read");
 
-        _config.getManageChannel().ifPresent(manageChannel -> {
-            if (manageChannel.isChannelsHistory())
+        _config.getScope().isAdministerWorkspace().ifPresent(admin -> {
+            if (admin)
             {
-                scopes.add("channels:history");
-            }
-            switch (manageChannel.getChannelsAccess())
-            {
-                case READ:
-                    scopes.add("channels:read");
-                    break;
-                case WRITE:
-                    scopes.add("channels:write");
+                scopes.add("admin");
             }
         });
+        _config.getScope().isManageScopes().ifPresent(manageScopes -> {
+            manageScopes.getManageChannel().ifPresent(manageChannel -> {
+                if (manageChannel.isChannelsHistory())
+                {
+                    scopes.add("channels:history");
+                }
+                switch (manageChannel.getChannelsAccess())
+                {
+                    case READ:
+                        scopes.add("channels:read");
+                        break;
+                    case WRITE:
+                        scopes.add("channels:write");
+                }
+            });
 
-        if (_config.isChatWriteBotAccess())
-        {
-            scopes.add("chat:write:bot");
-        }
-        if (_config.isChatWriteUserAccess())
-        {
-            scopes.add("chat:write:user");
-        }
-        if (_config.isClientAccess())
-        {
-            scopes.add("client");
-        }
-        if (_config.isCommandsAccess())
-        {
-            scopes.add("commands");
-        }
-        switch (_config.getDoNotDisturbAccess())
-        {
-            case READ:
-                scopes.add("dnd:read");
-                break;
-            case WRITE:
-                scopes.add("dnd:write");
-        }
-        if (_config.isEmojiAccess())
-        {
-            scopes.add("emoji:read");
-        }
-        switch (_config.getFilesAccess())
-        {
-            case READ:
-                scopes.add("files:read");
-                break;
-            case WRITE:
-                scopes.add("files:write");
-        }
-        _config.getManageGroups().ifPresent(manageGroups -> {
-            if (manageGroups.isGroupsHistory())
+            if (manageScopes.isChatWriteBotAccess())
             {
-                scopes.add("groups:history");
+                scopes.add("chat:write:bot");
             }
-            switch (manageGroups.getGroupsAccess())
+            if (manageScopes.isChatWriteUserAccess())
+            {
+                scopes.add("chat:write:user");
+            }
+            if (manageScopes.isClientAccess())
+            {
+                scopes.add("client");
+            }
+            if (manageScopes.isCommandsAccess())
+            {
+                scopes.add("commands");
+            }
+            switch (manageScopes.getDoNotDisturbAccess())
             {
                 case READ:
-                    scopes.add("groups:read");
+                    scopes.add("dnd:read");
                     break;
                 case WRITE:
-                    scopes.add("groups:write");
+                    scopes.add("dnd:write");
             }
-        });
-        if (_config.isIdentityAccess())
-        {
-            scopes.add("identity");
-        }
-        if (_config.isViewAvatar())
-        {
-            scopes.add("identity.avatar");
-        }
-        if (_config.isViewEmail())
-        {
-            scopes.add("identity.email");
-        }
-        if (_config.isViewTeam())
-        {
-            scopes.add("identity.team");
-        }
-        _config.getManageDirectMessages().ifPresent(manageGroups -> {
-            if (manageGroups.isDirectMessagesHistory())
+            if (manageScopes.isEmojiAccess())
             {
-                scopes.add("im:history");
+                scopes.add("emoji:read");
             }
-            switch (manageGroups.getDirectMessagesAccess())
+            switch (manageScopes.getFilesAccess())
             {
                 case READ:
-                    scopes.add("im:read");
+                    scopes.add("files:read");
                     break;
                 case WRITE:
-                    scopes.add("im:write");
+                    scopes.add("files:write");
             }
-        });
-        if (_config.isCreateWebhook())
-        {
-            scopes.add("incoming-webhook");
-        }
-        switch (_config.getLinksAccess())
-        {
-            case READ:
-                scopes.add("links:read");
-                break;
-            case WRITE:
-                scopes.add("links:write");
-        }
-        _config.getManageGroupMessages().ifPresent(manageGroups -> {
-            if (manageGroups.isGroupMessagesHistory())
+            manageScopes.getManageGroups().ifPresent(manageGroups -> {
+                if (manageGroups.isGroupsHistory())
+                {
+                    scopes.add("groups:history");
+                }
+                switch (manageGroups.getGroupsAccess())
+                {
+                    case READ:
+                        scopes.add("groups:read");
+                        break;
+                    case WRITE:
+                        scopes.add("groups:write");
+                }
+            });
+            if (manageScopes.isIdentityAccess())
             {
-                scopes.add("mpim:history");
+                scopes.add("identity");
             }
-            switch (manageGroups.getGroupMessagesAccess())
+            if (manageScopes.isViewAvatar())
+            {
+                scopes.add("identity.avatar");
+            }
+            if (manageScopes.isViewEmail())
+            {
+                scopes.add("identity.email");
+            }
+            if (manageScopes.isViewTeam())
+            {
+                scopes.add("identity.team");
+            }
+            manageScopes.getManageDirectMessages().ifPresent(manageGroups -> {
+                if (manageGroups.isDirectMessagesHistory())
+                {
+                    scopes.add("im:history");
+                }
+                switch (manageGroups.getDirectMessagesAccess())
+                {
+                    case READ:
+                        scopes.add("im:read");
+                        break;
+                    case WRITE:
+                        scopes.add("im:write");
+                }
+            });
+            if (manageScopes.isCreateWebhook())
+            {
+                scopes.add("incoming-webhook");
+            }
+            switch (manageScopes.getLinksAccess())
             {
                 case READ:
-                    scopes.add("mpim:read");
+                    scopes.add("links:read");
                     break;
                 case WRITE:
-                    scopes.add("mpim:write");
+                    scopes.add("links:write");
+            }
+            manageScopes.getManageGroupMessages().ifPresent(manageGroups -> {
+                if (manageGroups.isGroupMessagesHistory())
+                {
+                    scopes.add("mpim:history");
+                }
+                switch (manageGroups.getGroupMessagesAccess())
+                {
+                    case READ:
+                        scopes.add("mpim:read");
+                        break;
+                    case WRITE:
+                        scopes.add("mpim:write");
+                }
+            });
+            switch (manageScopes.getPinsAccess())
+            {
+                case READ:
+                    scopes.add("pins:read");
+                    break;
+                case WRITE:
+                    scopes.add("pins:write");
+            }
+            if (manageScopes.isPostMessage())
+            {
+                scopes.add("post");
+            }
+            switch (manageScopes.getReactionsAccess())
+            {
+                case READ:
+                    scopes.add("reactions:read");
+                    break;
+                case WRITE:
+                    scopes.add("reactions:write");
+            }
+            if (manageScopes.isReadAccess())
+            {
+                scopes.add("read");
+            }
+            switch (manageScopes.getRemindersAccess())
+            {
+                case READ:
+                    scopes.add("reminders:read");
+                    break;
+                case WRITE:
+                    scopes.add("reminders:write");
+            }
+            if (manageScopes.isSearchAccess())
+            {
+                scopes.add("search:read");
+            }
+            switch (manageScopes.getStarsAccess())
+            {
+                case READ:
+                    scopes.add("stars:read");
+                    break;
+                case WRITE:
+                    scopes.add("stars:write");
+            }
+            if (manageScopes.isTeamAccess())
+            {
+                scopes.add("team:read");
+            }
+            if (manageScopes.isBasicTokenAccess())
+            {
+                scopes.add("tokens.basic");
+            }
+            switch (manageScopes.getUserGroupsAccess())
+            {
+                case READ:
+                    scopes.add("usergroups:read");
+                    break;
+                case WRITE:
+                    scopes.add("usergroups:write");
+            }
+            switch (manageScopes.getUserProfileAccess())
+            {
+                case READ:
+                    scopes.add("user.profile:read");
+                    break;
+                case WRITE:
+                    scopes.add("user.profile:write");
+            }
+            if (manageScopes.isEmailAccess())
+            {
+                scopes.add("users:read.email");
+            }
+            if (manageScopes.isModifyUserProfile())
+            {
+                scopes.add("users:write");
             }
         });
-        switch (_config.getPinsAccess())
-        {
-            case READ:
-                scopes.add("pins:read");
-                break;
-            case WRITE:
-                scopes.add("pins:write");
-        }
-        if (_config.isPostMessage())
-        {
-            scopes.add("post");
-        }
-        switch (_config.getReactionsAccess())
-        {
-            case READ:
-                scopes.add("reactions:read");
-                break;
-            case WRITE:
-                scopes.add("reactions:write");
-        }
-        if (_config.isReadAccess())
-        {
-            scopes.add("read");
-        }
-        switch (_config.getRemindersAccess())
-        {
-            case READ:
-                scopes.add("reminders:read");
-                break;
-            case WRITE:
-                scopes.add("reminders:write");
-        }
-        if (_config.isSearchAccess())
-        {
-            scopes.add("search:read");
-        }
-        switch (_config.getStarsAccess())
-        {
-            case READ:
-                scopes.add("stars:read");
-                break;
-            case WRITE:
-                scopes.add("stars:write");
-        }
-        if (_config.isTeamAccess())
-        {
-            scopes.add("team:read");
-        }
-        if (_config.isBasicTokenAccess())
-        {
-            scopes.add("tokens.basic");
-        }
-        switch (_config.getUserGroupsAccess())
-        {
-            case READ:
-                scopes.add("usergroups:read");
-                break;
-            case WRITE:
-                scopes.add("usergroups:write");
-        }
-        switch (_config.getUserProfileAccess())
-        {
-            case READ:
-                scopes.add("user.profile:read");
-                break;
-            case WRITE:
-                scopes.add("user.profile:write");
-        }
-        if (_config.isEmailAccess())
-        {
-            scopes.add("users:read.email");
-        }
-        if (_config.isModifyUserProfile())
-        {
-            scopes.add("users:write");
-        }
 
     }
 

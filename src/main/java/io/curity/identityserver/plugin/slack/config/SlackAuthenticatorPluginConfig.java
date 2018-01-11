@@ -45,9 +45,6 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
     @Description("Slack team ID of a workspace to attempt to restrict to")
     Optional<String> getTeam();
 
-
-    Optional<Scopes> getScope();
-
     interface Scopes extends OneOf
     {
         Optional<@DefaultBoolean(true) Boolean> isAdministerWorkspace();
@@ -90,11 +87,11 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
     {
         @Description("Request a scope (channels:history) that grants access to content in your public channels")
         @DefaultBoolean(false)
-        boolean isChannelHistory();
+        boolean isChannelsHistory();
 
         @Description("Manage access to information about your public channels")
         @DefaultEnum("NONE")
-        Access getChannelAccess();
+        Access getChannelsAccess();
     }
 
     @Description("Request a scope (chat:write:bot) that grants access to send messages as your slack app")
@@ -147,6 +144,14 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
     @Description("Request a scope (identity.avatar) that grants access to view your Slack avatar")
     @DefaultBoolean(false)
     boolean isViewAvatar();
+
+    @Description("Request a scope (identity.email) that grants access to view your Slack email")
+    @DefaultBoolean(false)
+    boolean isViewEmail();
+
+    @Description("Request a scope (identity.team) that grants access to view your Slack workspace name")
+    @DefaultBoolean(false)
+    boolean isViewTeam();
 
     @Description("Manage information about your direct messages")
     Optional<ManageDirectMessages> getManageDirectMessages();

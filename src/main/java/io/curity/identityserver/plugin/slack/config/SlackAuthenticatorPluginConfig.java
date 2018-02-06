@@ -225,10 +225,6 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
         }
     }
 
-
-
-
-
     SessionManager getSessionManager();
 
     ExceptionFactory getExceptionFactory();
@@ -238,5 +234,4 @@ public interface SlackAuthenticatorPluginConfig extends Configuration
     WebServiceClientFactory getWebServiceClientFactory();
 
     Json getJson();
-
 }

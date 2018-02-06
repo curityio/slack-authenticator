@@ -98,18 +98,21 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         @Nullable Object accessToken = tokenResponseData.get("access_token");
         @Nullable Object teamId = tokenResponseData.get("team_id");
         @Nullable Object teamName = tokenResponseData.get("team_name");
-
         List<Attribute> subjectAttributes = new LinkedList<>(), contextAttributes = new LinkedList<>();
         String userId = tokenResponseData.get("user_id").toString();
+
         subjectAttributes.add(Attribute.of("user_id", userId));
+
         if (teamId != null)
         {
             subjectAttributes.add(Attribute.of("team_id", teamId.toString()));
         }
+
         if (teamName != null)
         {
             subjectAttributes.add(Attribute.of("team_name", teamName.toString()));
         }
+
         contextAttributes.add(Attribute.of("slack_access_token", accessToken.toString()));
         contextAttributes.add(Attribute.of("granted_scopes", tokenResponseData.get("scope").toString()));
 
@@ -166,19 +169,22 @@ public class CallbackRequestHandler implements AuthenticatorRequestHandler<Callb
         {
             if ("access_denied".equals(requestModel.getError()))
             {
-                _logger.debug("Got an error from Slack: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
+                _logger.debug("Got an error from Slack: {} - {}", requestModel.getError(), requestModel
+                        .getErrorDescription());
 
                 throw _exceptionFactory.redirectException(
                         _authenticatorInformationProvider.getAuthenticationBaseUri().toASCIIString());
             }
 
-            _logger.warn("Got an error from Slack: {} - {}", requestModel.getError(), requestModel.getErrorDescription());
+            _logger.warn("Got an error from Slack: {} - {}", requestModel.getError(), requestModel
+                    .getErrorDescription());
 
             throw _exceptionFactory.externalServiceException("Login with Slack failed");
         }
     }
 
-    private static Map<String, String> createPostData(String clientId, String clientSecret, String code, String callbackUri)
+    private static Map<String, String> createPostData(String clientId, String clientSecret, String code, String
+            callbackUri)
     {
         Map<String, String> data = new HashMap<>(5);
 

@@ -1,7 +1,7 @@
 Slack Authenticator Plug-in
 ===========================
 
-.. image:: https://travis-ci.org/curityio/slack-authenticator.svg?branch=dev
+.. image:: https://travis-ci.org/curityio/slack-authenticator.svg?branch=master
       :target: https://travis-ci.org/curityio/slack-authenticator
 
 This project provides an opens source Slack Authenticator plug-in for the Curity Identity Server. This allows an administrator to add functionality to Curity which will then enable end users to login using their Slack credentials. The app that integrates with Curity may also be configured to receive the Slack access token, allowing it to manage resources in a Slack.
@@ -9,7 +9,7 @@ This project provides an opens source Slack Authenticator plug-in for the Curity
 System Requirements
 ~~~~~~~~~~~~~~~~~~~
 
-* Curity Identity Server 3.0.0 and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
+* Curity Identity Server 2.4.0 and `its system requirements <https://developer.curity.io/docs/latest/system-admin-guide/system-requirements.html>`_
 
 Requirements for Building from Source
 """""""""""""""""""""""""""""""""""""
@@ -78,7 +78,6 @@ Once the redirect URI is updated, you need to configure at least one scope ``Rea
 .. figure:: docs/images/slack-scope-selected.png
     :align: center
     :width: 500px
-
 
 It could be helpful to also enable additional scopes. Scopes are the Slack-related rights or permissions that the app is requesting. If the final application (not Curity, but the downstream app) is going to perform actions using the Slack API, additional scopes probably should be enabled. Refer to the `Slack documentation on scopes <https://api.slack.com/scopes>`_ for an explanation of those that can be enabled and what they allow.
 

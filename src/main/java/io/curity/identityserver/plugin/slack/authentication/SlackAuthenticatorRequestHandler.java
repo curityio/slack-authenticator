@@ -105,217 +105,97 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
         }
     }
 
+    static private void addScopeIfApplicable(Set<String> scopes, String scope, boolean add)
+    {
+        if (add)
+        {
+            scopes.add(scope);
+        }
+    }
+
     private void handleScopes(Set<String> scopes)
     {
         //add default scope to get user profile info
         scopes.add("users:read");
 
-        _config.getScope().isAdministerWorkspace().ifPresent(admin -> {
-            if (admin)
-            {
-                scopes.add("admin");
-            }
-        });
-        _config.getScope().isManageScopes().ifPresent(manageScopes -> {
-            manageScopes.getManageChannel().ifPresent(manageChannel -> {
-                if (manageChannel.isChannelsHistory())
-                {
-                    scopes.add("channels:history");
-                }
-                switch (manageChannel.getChannelsAccess())
-                {
-                    case READ:
-                        scopes.add("channels:read");
-                        break;
-                    case WRITE:
-                        scopes.add("channels:write");
-                }
-            });
-
-            if (manageScopes.isChatWriteBotAccess())
-            {
-                scopes.add("chat:write:bot");
-            }
-            if (manageScopes.isChatWriteUserAccess())
-            {
-                scopes.add("chat:write:user");
-            }
-            if (manageScopes.isClientAccess())
-            {
-                scopes.add("client");
-            }
-            if (manageScopes.isCommandsAccess())
-            {
-                scopes.add("commands");
-            }
-            switch (manageScopes.getDoNotDisturbAccess())
-            {
-                case READ:
-                    scopes.add("dnd:read");
-                    break;
-                case WRITE:
-                    scopes.add("dnd:write");
-            }
-            if (manageScopes.isEmojiAccess())
-            {
-                scopes.add("emoji:read");
-            }
-            switch (manageScopes.getFilesAccess())
-            {
-                case READ:
-                    scopes.add("files:read");
-                    break;
-                case WRITE:
-                    scopes.add("files:write");
-            }
-            manageScopes.getManageGroups().ifPresent(manageGroups -> {
-                if (manageGroups.isGroupsHistory())
-                {
-                    scopes.add("groups:history");
-                }
-                switch (manageGroups.getGroupsAccess())
-                {
-                    case READ:
-                        scopes.add("groups:read");
-                        break;
-                    case WRITE:
-                        scopes.add("groups:write");
-                }
-            });
-            if (manageScopes.isIdentityAccess())
-            {
-                scopes.add("identity");
-            }
-            if (manageScopes.isViewAvatar())
-            {
-                scopes.add("identity.avatar");
-            }
-            if (manageScopes.isViewEmail())
-            {
-                scopes.add("identity.email");
-            }
-            if (manageScopes.isViewTeam())
-            {
-                scopes.add("identity.team");
-            }
-            manageScopes.getManageDirectMessages().ifPresent(manageGroups -> {
-                if (manageGroups.isDirectMessagesHistory())
-                {
-                    scopes.add("im:history");
-                }
-                switch (manageGroups.getDirectMessagesAccess())
-                {
-                    case READ:
-                        scopes.add("im:read");
-                        break;
-                    case WRITE:
-                        scopes.add("im:write");
-                }
-            });
-            if (manageScopes.isCreateWebhook())
-            {
-                scopes.add("incoming-webhook");
-            }
-            switch (manageScopes.getLinksAccess())
-            {
-                case READ:
-                    scopes.add("links:read");
-                    break;
-                case WRITE:
-                    scopes.add("links:write");
-            }
-            manageScopes.getManageGroupMessages().ifPresent(manageGroups -> {
-                if (manageGroups.isGroupMessagesHistory())
-                {
-                    scopes.add("mpim:history");
-                }
-                switch (manageGroups.getGroupMessagesAccess())
-                {
-                    case READ:
-                        scopes.add("mpim:read");
-                        break;
-                    case WRITE:
-                        scopes.add("mpim:write");
-                }
-            });
-            switch (manageScopes.getPinsAccess())
-            {
-                case READ:
-                    scopes.add("pins:read");
-                    break;
-                case WRITE:
-                    scopes.add("pins:write");
-            }
-            if (manageScopes.isPostMessage())
-            {
-                scopes.add("post");
-            }
-            switch (manageScopes.getReactionsAccess())
-            {
-                case READ:
-                    scopes.add("reactions:read");
-                    break;
-                case WRITE:
-                    scopes.add("reactions:write");
-            }
-            if (manageScopes.isReadAccess())
-            {
-                scopes.add("read");
-            }
-            switch (manageScopes.getRemindersAccess())
-            {
-                case READ:
-                    scopes.add("reminders:read");
-                    break;
-                case WRITE:
-                    scopes.add("reminders:write");
-            }
-            if (manageScopes.isSearchAccess())
-            {
-                scopes.add("search:read");
-            }
-            switch (manageScopes.getStarsAccess())
-            {
-                case READ:
-                    scopes.add("stars:read");
-                    break;
-                case WRITE:
-                    scopes.add("stars:write");
-            }
-            if (manageScopes.isTeamAccess())
-            {
-                scopes.add("team:read");
-            }
-            if (manageScopes.isBasicTokenAccess())
-            {
-                scopes.add("tokens.basic");
-            }
-            switch (manageScopes.getUserGroupsAccess())
-            {
-                case READ:
-                    scopes.add("usergroups:read");
-                    break;
-                case WRITE:
-                    scopes.add("usergroups:write");
-            }
-            switch (manageScopes.getUserProfileAccess())
-            {
-                case READ:
-                    scopes.add("user.profile:read");
-                    break;
-                case WRITE:
-                    scopes.add("user.profile:write");
-            }
-            if (manageScopes.isEmailAccess())
-            {
-                scopes.add("users:read.email");
-            }
-            if (manageScopes.isModifyUserProfile())
-            {
-                scopes.add("users:write");
-            }
+        _config.getScope().isAdministerWorkspace().ifPresent(admin ->
+        {
+            addScopeIfApplicable(scopes, "admin", admin);
         });
 
+        _config.getScope().isManageScopes().ifPresent(manageScopes ->
+        {
+            addScopeIfApplicable(scopes, "chat:write:bot", manageScopes.isChatWriteBotAccess());
+            addScopeIfApplicable(scopes, "chat:write:user", manageScopes.isChatWriteUserAccess());
+            addScopeIfApplicable(scopes, "client", manageScopes.isClientAccess());
+            addScopeIfApplicable(scopes, "commands", manageScopes.isCommandsAccess());
+            addScopeIfApplicable(scopes, "emoji:read", manageScopes.isEmojiAccess());
+            addScopeIfApplicable(scopes, "dnd:read", "dnd:write", manageScopes.getDoNotDisturbAccess());
+            addScopeIfApplicable(scopes, "files:read", "files:write", manageScopes.getFilesAccess());
+            addScopeIfApplicable(scopes, "incoming-webhook", manageScopes.isCreateWebhook());
+            addScopeIfApplicable(scopes, "links:read", "links:write", manageScopes.getLinksAccess());
+            addScopeIfApplicable(scopes, "links:read", "links:write", manageScopes.getLinksAccess());
+            addScopeIfApplicable(scopes, "identity", manageScopes.isIdentityAccess());
+            addScopeIfApplicable(scopes, "identity.avatar", manageScopes.isViewAvatar());
+            addScopeIfApplicable(scopes, "identity.email", manageScopes.isViewEmail());
+            addScopeIfApplicable(scopes, "identity.team", manageScopes.isViewTeam());
+            addScopeIfApplicable(scopes, "pins:read", "pins:write", manageScopes.getPinsAccess());
+            addScopeIfApplicable(scopes, "post", manageScopes.isPostMessage());
+            addScopeIfApplicable(scopes, "reactions:read", "reactions:write", manageScopes.getReactionsAccess());
+            addScopeIfApplicable(scopes, "read", manageScopes.isReadAccess());
+            addScopeIfApplicable(scopes, "reminders:read", "reminders:write", manageScopes.getRemindersAccess());
+            addScopeIfApplicable(scopes, "search:read", manageScopes.isSearchAccess());
+            addScopeIfApplicable(scopes, "stars:read", "stars:write", manageScopes.getStarsAccess());
+            addScopeIfApplicable(scopes, "team:read", manageScopes.isTeamAccess());
+            addScopeIfApplicable(scopes, "tokens.basic", manageScopes.isBasicTokenAccess());
+            addScopeIfApplicable(scopes, "user.profile:read", "user.profile:write", manageScopes.getUserProfileAccess());
+            addScopeIfApplicable(scopes, "users:read.email", manageScopes.isEmailAccess());
+            addScopeIfApplicable(scopes, "users:write", manageScopes.isModifyUserProfile());
+            addScopeIfApplicable(scopes, "usergroups:read", "usergroups:write", manageScopes.getUserGroupsAccess());
+
+            manageScopes.getManageChannel().ifPresent(manageChannel ->
+            {
+                addScopeIfApplicable(scopes, "channels:history", manageChannel.isChannelsHistory());
+                addScopeIfApplicable(scopes, "channels:read", "channels:write", manageChannel.getChannelsAccess());
+            });
+            
+            manageScopes.getManageGroups().ifPresent(manageGroups ->
+            {
+                addScopeIfApplicable(scopes, "groups:history", manageGroups.isGroupsHistory());
+                addScopeIfApplicable(scopes, "groups:read", "groups:write", manageGroups.getGroupsAccess());
+            });
+
+            manageScopes.getManageDirectMessages().ifPresent(manageGroups ->
+            {
+                addScopeIfApplicable(scopes, "im:history", manageGroups.isDirectMessagesHistory());
+                addScopeIfApplicable(scopes, "im:read", "im:write", manageGroups.getDirectMessagesAccess());
+            });
+
+            manageScopes.getManageGroupMessages().ifPresent(manageGroups ->
+            {
+                addScopeIfApplicable(scopes, "mpim:history", manageGroups.isGroupMessagesHistory());
+                addScopeIfApplicable(scopes, "mpim:read", "mpim:write", manageGroups.getGroupMessagesAccess());
+            });
+        });
+    }
+
+    private void addScopeIfApplicable(Set<String> scopes, String readScope, String writeScope,
+                                      SlackAuthenticatorPluginConfig.Scopes.Access access)
+    {
+        if (access == SlackAuthenticatorPluginConfig.Scopes.Access.READ)
+        {
+            scopes.add(readScope);
+        }
+        else if (access == SlackAuthenticatorPluginConfig.Scopes.Access.WRITE)
+        {
+            scopes.add(writeScope);
+        }
+        else
+        {
+            _logger.error("An unexpected access level was provided.");
+
+            throw new IllegalArgumentException("Cannot process access level");
+        }
     }
 
     @Override

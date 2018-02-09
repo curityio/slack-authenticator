@@ -190,6 +190,9 @@ public class SlackAuthenticatorRequestHandler implements AuthenticatorRequestHan
         {
             scopes.add(writeScope);
         }
+        else if(access == SlackAuthenticatorPluginConfig.Scopes.Access.NONE){
+            // Do nothing because selected access type is none
+        }
         else
         {
             _logger.error("An unexpected access level was provided.");
